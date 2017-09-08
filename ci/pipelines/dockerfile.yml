@@ -3,20 +3,26 @@ resources:
   type: git
   source:
     uri: https://github.com/pivotal/LicenseFinder
-    branch: master
-
-- name: image
-  type: docker-image
-  source:
-    repository: licensefinder/license_finder
-    email: ((LicenseFinderDockerEmail))
-    username: ((LicenseFinderDockerUserName))
-    password: ((LicenseFinderDockerPassword))
+    branch: test-branch
+    username: xtreme-behrouz-soroushian
+    password: cxu7stultulo
 
 jobs:
-- name: docker
+- name: GetGit
   plan:
   - get: LicenseFinder
-  - put: image
-    params:
-     build: LicenseFinder
+  - task: CheckLogs
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: concourse/git-resource
+      inputs:
+      - name: LicenseFinder
+        path: LicenseFinder/
+      run:
+        path: bash
+        args:
+        - "-lc"
+        - cd LicenseFinder && git log v3.0.0..v3.0.2 --oneline | awk '{$1=""; print}' | awk '{$1=$1};1'
