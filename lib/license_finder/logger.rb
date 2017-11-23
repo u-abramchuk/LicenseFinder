@@ -6,15 +6,19 @@ module LicenseFinder
     MODE_INFO = :info
     MODE_DEBUG = :debug
 
+    def self.default_logger
+      Logger.new
+    end
+
     attr_reader :mode
 
-    def initialize(options = {})
+    def initialize(mode = MODE_INFO)
       @system_logger = ::Logger.new(STDOUT)
       @system_logger.formatter = proc do |_, _, _, msg|
         "#{msg}\n"
       end
 
-      self.mode = options[:mode] || MODE_INFO
+      self.mode = mode || MODE_INFO
     end
 
     [MODE_INFO, MODE_DEBUG].each do |level|

@@ -1,8 +1,9 @@
 module LicenseFinder
   class LicenseAggregator
-    def initialize(license_finder_config, aggregate_paths)
+    def initialize(license_finder_config, aggregate_paths, project_finder)
       @license_finder_config = license_finder_config
       @aggregate_paths = aggregate_paths
+      @project_finder = project_finder
     end
 
     def dependencies
@@ -29,10 +30,10 @@ module LicenseFinder
     def finders
       return @finders unless @finders.nil?
       @finders = if @aggregate_paths.nil?
-                   [LicenseFinder::Core.new(@license_finder_config)]
+                   [LicenseFinder::Core.new(@license_finder_config, @project_finder)]
                  else
                    @aggregate_paths.map do |path|
-                     LicenseFinder::Core.new(@license_finder_config.merge(project_path: path))
+                     LicenseFinder::Core.new(@license_finder_config.merge(project_path: path), @project_finder)
                    end
                  end
     end

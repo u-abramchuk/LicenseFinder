@@ -1,0 +1,1 @@
+{"licences":[{"name":"The MIT License","url":"http://code.google.com/p/mockito/wiki/License","dependencies":["mockito-core-1.9.5.jar"]},{"name":"MIT License","url":"http://objenesis.googlecode.com/svn/docs/license.html","dependencies":["objenesis-1.0.jar"]},{"name":"BSD style","url":"http://www.opensource.org/licenses/bsd-license.php","dependencies":["hamcrest-core-1.1.jar"]}]}

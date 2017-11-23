@@ -28,7 +28,7 @@ module LicenseFinder
         installed_package_managers.flat_map(&:current_packages_with_relations)
       end
 
-      def active_package_managers(options = { project_path: Pathname.new('') })
+      def active_package_managers(project_path:options = { project_path: Pathname.new('') })
         logger = options[:logger]
 
         active_pm_classes = []

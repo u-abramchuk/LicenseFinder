@@ -1,0 +1,11 @@
+<licenses>
+  <license name='The MIT License' url='http://code.google.com/p/mockito/wiki/License'>
+    <dependency>mockito-core-1.9.5.jar</dependency>
+  </license>
+  <license name='MIT License' url='http://objenesis.googlecode.com/svn/docs/license.html'>
+    <dependency>objenesis-1.0.jar</dependency>
+  </license>
+  <license name='BSD style' url='http://www.opensource.org/licenses/bsd-license.php'>
+    <dependency>hamcrest-core-1.1.jar</dependency>
+  </license>
+</licenses>

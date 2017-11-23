@@ -1,8 +1,19 @@
 module LicenseFinder
   class ProjectFinder
-    def initialize(main_project_path)
+
+    attr_reader :main_project_path
+
+    def initialize(options = {})
+      @options = options
       @package_managers = LicenseFinder::PackageManager.package_managers
-      @main_project_path = main_project_path
+      @main_project_path = Pathname(options.fetch(:project_path, Pathname.pwd)).expand_path
+    end
+
+    def paths_to_scan
+      aggregate_paths = @options[:aggregate_paths]
+      aggregate_paths = find_projects if @options[:recursive]
+      return aggregate_paths unless aggregate_paths.nil? || aggregate_paths.empty?
+      [@main_project_path]
     end
 
     def find_projects

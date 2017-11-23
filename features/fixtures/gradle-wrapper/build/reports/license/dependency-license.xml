@@ -1,0 +1,10 @@
+<dependencies>
+  <dependency name='org.hamcrest:hamcrest-core:1.3'>
+    <file>hamcrest-core-1.3.jar</file>
+    <license name='New BSD License' url='http://www.opensource.org/licenses/bsd-license.php' />
+  </dependency>
+  <dependency name='junit:junit:4.11'>
+    <file>junit-4.11.jar</file>
+    <license name='Common Public License Version 1.0' url='http://www.opensource.org/licenses/cpl1.0.txt' />
+  </dependency>
+</dependencies>

@@ -20,7 +20,6 @@ module LicenseFinder
 
       class_option :format, desc: 'The desired output format.', default: 'text', enum: FORMATS.keys
       class_option :columns, type: :array, desc: "For text or CSV reports, which columns to print. Pick from: #{CsvReport::AVAILABLE_COLUMNS}"
-      class_option :save, desc: "Save report to a file. Default: 'license_report.csv' in project root.", lazy_default: 'license_report'
       class_option :go_full_version, desc: 'Whether dependency version should include full version. Only meaningful if used with a Go project. Defaults to false.'
       class_option :gradle_include_groups, desc: 'Whether dependency name should include group id. Only meaningful if used with a Java/gradle project. Defaults to false.'
       class_option :gradle_command,
@@ -48,19 +47,28 @@ module LicenseFinder
                       default: false,
                       required: false
 
-        method_option :recursive, aliases: '-r', type: :boolean, default: false,
-                                  desc: 'Recursively runs License Finder on all sub-projects'
+        method_option :recursive,
+                      aliases: '-r',
+                      type: :boolean,
+                      default: false,
+                      desc: 'Recursively runs License Finder on all sub-projects'
 
-        method_option :aggregate_paths, aliases: '-a', type: :array,
-                                        desc: "Generate a single report for multiple projects. Ex: --aggregate_paths='path/to/project1' 'path/to/project2'"
+        method_option :aggregate_paths,
+                      aliases: '-a',
+                      type: :array,
+                      desc: "Generate a single report for multiple projects. Ex: --aggregate_paths='path/to/project1' 'path/to/project2'"
 
-        method_option :quiet, aliases: '-q', type: :boolean, desc: 'Silences progress report', required: false
+        method_option :quiet,
+                      aliases: '-q',
+                      type: :boolean,
+                      desc: 'Silences progress report',
+                      required: false
       end
 
       desc 'action_items', 'List unapproved dependencies (the default action for `license_finder`)'
       shared_options
       def action_items
-        finder = LicenseAggregator.new(license_finder_config, aggregate_paths)
+        finder = LicenseAggregator.new(license_finder_config, paths_to_scan, project_finder)
         any_packages = finder.any_packages?
         unapproved = finder.unapproved
         blacklisted = finder.blacklisted
@@ -95,11 +103,12 @@ module LicenseFinder
 
       desc 'report', "Print a report of the project's dependencies to stdout"
       shared_options
+      method_option :save, desc: "Save report to a file. Default: 'license_report.csv' in project root.", lazy_default: 'license_report'
 
       def report
         logger_config[:mode] = Logger::MODE_QUIET
 
-        finder = LicenseAggregator.new(license_finder_config, aggregate_paths)
+        finder = LicenseAggregator.new(license_finder_config, paths_to_scan, project_finder)
         report = report_of(finder.dependencies)
         save? ? save_report(report, options[:save]) : say(report)
       end
@@ -128,13 +137,6 @@ module LicenseFinder
 
       private
 
-      def aggregate_paths
-        aggregate_paths = options[:aggregate_paths]
-        aggregate_paths = ProjectFinder.new(license_finder.config.project_path).find_projects if options[:recursive]
-        return aggregate_paths unless aggregate_paths.nil? || aggregate_paths.empty?
-        [license_finder_config[:project_path]] unless license_finder_config[:project_path].nil?
-      end
-
       def save_report(content, file_name)
         File.open(file_name, 'w') do |f|
           f.write(content)
@@ -147,16 +149,20 @@ module LicenseFinder
         report.of(content, columns: options[:columns], project_name: license_finder.project_name)
       end
 
+      def project_finder
+        @project_finder = ProjectFinder.new(options)
+      end
+
+      def paths_to_scan
+        project_finder.paths_to_scan
+      end
+
       def save?
         !!options[:save]
       end
 
       def prepare?
         options[:prepare]
-      end
-
-      def run_prepare_phase
-        license_finder.prepare_projects
       end
     end
   end

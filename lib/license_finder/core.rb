@@ -26,9 +26,9 @@ module LicenseFinder
     #   rebar_command: "rebar",
     #   rebar_deps_dir: "deps",
     # }
-    def initialize(options = {})
+    def initialize(options = {}, project_finder)
       @logger = Logger.new(options.fetch(:logger, {}))
-      @config = Configuration.with_optional_saved_config(options)
+      @config = Configuration.with_optional_saved_config(options, project_finder.main_project_path)
     end
 
     def modifying
@@ -39,17 +39,17 @@ module LicenseFinder
     extend Forwardable
     def_delegators :decision_applier, :acknowledged, :unapproved, :blacklisted, :any_packages?
 
-    def project_name
-      decisions.project_name || config.project_path.basename.to_s
-    end
+    # def project_name
+    #   decisions.project_name || config.project_path.basename.to_s
+    # end
 
-    def project_path
-      config.project_path
-    end
+    # def project_path
+    #   config.project_path
+    # end
 
-    def decisions
-      @decisions ||= Decisions.fetch_saved(config.decisions_file_path)
-    end
+    # def decisions
+    #   @decisions ||= Decisions.fetch_saved(config.decisions_file_path)
+    # end
 
     def prepare_projects
       package_managers = PackageManager.active_package_managers options

@@ -1,0 +1,10 @@
+<dependencies>
+  <dependency name='junit:junit:4.12'>
+    <file>junit-4.12.jar</file>
+    <license name='Eclipse Public License 1.0' url='http://www.eclipse.org/legal/epl-v10.html' />
+  </dependency>
+  <dependency name='org.hamcrest:hamcrest-core:1.3'>
+    <file>hamcrest-core-1.3.jar</file>
+    <license name='New BSD License' url='http://www.opensource.org/licenses/bsd-license.php' />
+  </dependency>
+</dependencies>

@@ -1,6 +1,88 @@
 require 'thor'
 
 module LicenseFinder
+  class Options
+
+    def initialize(cli_options = {})
+      @cli_options = cli_options
+    end
+
+    def project_path
+      @project_path ||= Pathname(@cli_options.fetch(:project_path, Pathname.pwd)).expand_path
+    end
+
+    def valid_project_path?
+      return project_path.exist?
+    end
+
+    def gradle_command
+      get(:gradle_command)
+    end
+
+    def go_full_version
+      get(:go_full_version)
+    end
+
+    def gradle_include_groups
+      get(:gradle_include_groups)
+    end
+
+    def maven_include_groups
+      get(:maven_include_groups)
+    end
+
+    def maven_options
+      get(:maven_options)
+    end
+
+    def pip_requirements_path
+      get(:pip_requirements_path)
+    end
+
+    def rebar_command
+      get(:rebar_command)
+    end
+
+    def mix_command
+      get(:mix_command) || 'mix'
+    end
+
+    def rebar_deps_dir
+      path = get(:rebar_deps_dir) || 'deps'
+      @project_path.join(path).expand_path
+    end
+
+    def mix_deps_dir
+      path = get(:mix_deps_dir) || 'deps'
+      @project_path.join(path).expand_path
+    end
+
+    def decisions_file_path
+      path = get(:decisions_file) || 'doc/dependency_decisions.yml'
+      @project_path.join(path).expand_path
+    end
+
+    def prepare
+      get(:prepare)
+    end
+
+    private
+    attr_reader :saved_config
+    def saved_config
+      return @saved_config unless @saved_config.nil?
+      config_file =  project_path.join('config', 'license_finder.yml')
+      @saved_config ||= config_file.exist? ? YAML.safe_load(config_file.read) : {}
+    end
+
+    def determined_option(key)
+      @cli_options[key.to_sym] || saved_config[key.to_s]
+    end
+
+  end
+end
+
+
+module LicenseFinder
   module CLI
     class Base < Thor
       class_option :project_path,

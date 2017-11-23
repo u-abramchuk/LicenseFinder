@@ -1,0 +1,1 @@
+{"licences":[{"name":"New BSD License","url":"http://www.opensource.org/licenses/bsd-license.php","dependencies":["hamcrest-core-1.3.jar"]},{"name":"Common Public License Version 1.0","url":"http://www.opensource.org/licenses/cpl1.0.txt","dependencies":["junit-4.11.jar"]}]}
