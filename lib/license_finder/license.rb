@@ -40,7 +40,6 @@ module LicenseFinder
     end
 
     def stripped_name(name)
-      puts name
       if name.is_a? Array 
         name = name[0]
       end
