@@ -40,7 +40,19 @@ module LicenseFinder
     end
 
     def stripped_name(name)
-      name.sub(/^The /i, '')
+      puts name
+      if name.is_a? Array 
+        name = name[0]
+      end
+      if name.is_a? String 
+        name.sub(/^The /i, '')
+      else
+        if name.key?("type")
+          name.key("type")
+        else
+          "unknown"
+        end
+      end
     end
 
     def matches_name?(name)
